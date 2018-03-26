@@ -9,6 +9,8 @@ import com.lightbend.lagom.scaladsl.api.{Service, ServiceCall}
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.Call
 
+import scala.collection.mutable.ListBuffer
+
 
 
 object HellolagomService  {
@@ -33,6 +35,10 @@ trait HellolagomService extends Service {
   def getEmpDetails(id: Int): ServiceCall[NotUsed,List[EmpDetails]]
   def greetUser(name: String): ServiceCall[NotUsed,String]
   def testUser(): ServiceCall[NotUsed, UserData]
+  def insertEmpDetails(): ServiceCall[EmpDetails,ListBuffer[EmpDetails]]
+  def deleteEmpDetails(id: Int): ServiceCall[NotUsed,ListBuffer[EmpDetails]]
+  def getDetails(id: Int): ServiceCall[NotUsed,ListBuffer[EmpDetails]]
+  def updateEmpDetails(id: Int): ServiceCall[EmpDetails,ListBuffer[EmpDetails]]
 
   /**
     * Example: curl -H "Content-Type: application/json" -X POST -d '{"message":
@@ -56,7 +62,11 @@ trait HellolagomService extends Service {
         pathCall("/api/hello/:id", useGreeting _),
         pathCall("/api/age/:id", age _),
         restCall(Method.GET,"/api/getEmpDetails/:id", getEmpDetails _),
-        restCall(Method.GET,"/api/bye/testUser", testUser _)
+        restCall(Method.GET,"/api/bye/testUser", testUser _),
+       restCall(Method.POST,"/api/insertEmpDetails", insertEmpDetails _),
+        restCall(Method.GET,"/api/deleteEmpDetails/:id", deleteEmpDetails _ ),
+        restCall(Method.GET,"/api/getDetails/:id", getDetails _),
+        restCall(Method.PUT,"/api/updateEmpDetails/:id", updateEmpDetails _)
       )
       .withTopics(
         topic(HellolagomService.TOPIC_NAME, greetingsTopic)
